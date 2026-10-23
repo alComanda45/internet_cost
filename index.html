@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Cost Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px #00000015;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2563eb;
+            font-size: 25px;
+        }
+
+        .info {
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 8px;
+            color: #1e40af;
+            line-height: 1.8;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .result p {
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .balance {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .positive {
+            color: #dc2626;
+        }
+
+        .negative {
+            color: #16a34a;
+        }
+
+        .equal {
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Internet Cost Calculator</h1>
+
+        <div class="info">
+            Package Size: 150 GB<br>
+            Package Price: 380 EGP<br>
+            Number of People: 6<br>
+            Your Equal Share: 63.33 EGP
+        </div>
+
+        <label for="usedGB">Enter your used GB:</label>
+
+        <input
+            type="number"
+            id="usedGB"
+            placeholder="Example: 50"
+            min="0"
+            max="150"
+            step="any"
+        >
+
+        <button onclick="calculateCost()">
+            Calculate Cost
+        </button>
+
+        <div id="result" class="result"></div>
+
+    </div>
+
+    <script>
+        function calculateCost() {
+            let packagePrice = 380;
+            let packageSize = 150;
+            let numberOfPeople = 6;
+
+            let input = document.getElementById("usedGB");
+            let usedGB = Number(input.value);
+            let result = document.getElementById("result");
+
+            if (
+                input.value.trim() === "" ||
+                !Number.isFinite(usedGB) ||
+                usedGB < 0 ||
+                usedGB > packageSize
+            ) {
+                result.innerHTML =
+                    '<p style="color:red;">Please enter a number from 0 to 150 GB.</p>';
+                return;
+            }
+
+            let pricePerGB = packagePrice / packageSize;
+
+            let usageCost = usedGB * pricePerGB;
+
+            let equalShare = packagePrice / numberOfPeople;
+
+            let difference = usageCost - equalShare;
+
+            let balanceMessage = "";
+            let balanceClass = "";
+
+            if (difference > 0.001) {
+                balanceMessage =
+                    "You should pay " + difference.toFixed(2) +
+                    " EGP extra.";
+                balanceClass = "positive";
+            } else if (difference < -0.001) {
+                balanceMessage =
+                    "You have " + Math.abs(difference).toFixed(2) +
+                    " EGP left.";
+                balanceClass = "negative";
+            } else {
+                balanceMessage = "Your usage cost equals your equal share.";
+                balanceClass = "equal";
+            }
+
+            result.innerHTML = `
+                <p>Your Usage: ${usedGB} GB</p>
+
+                <p>Usage Cost: ${usageCost.toFixed(2)} EGP</p>
+
+                <p>Equal Share: ${equalShare.toFixed(2)} EGP</p>
+
+                <p class="balance ${balanceClass}">
+                    ${balanceMessage}
+                </p>
+            `;
+        }
+    </script>
+
+</body>
+</html>
